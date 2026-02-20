@@ -19,9 +19,53 @@
     --text-dim: #8a8575;
     --sehri: #7eb8f7;
     --iftar: #f4a261;
-    --sunrise: #ffd166;
+    --sunrise: #c8922a;
     --sunset: #ef6c57;
     --radius: 16px;
+    --card-bg: linear-gradient(135deg, #1a1b2e 0%, #0f1022 100%);
+    --card-border: rgba(201,168,76,0.3);
+    --pill-bg: rgba(255,255,255,0.04);
+    --pill-border: rgba(255,255,255,0.06);
+    --sun-pill-bg: rgba(255,255,255,0.03);
+    --sun-pill-border: rgba(255,255,255,0.04);
+    --nav-bg: rgba(17,18,32,0.95);
+    --nav-border: rgba(255,255,255,0.08);
+    --row-bg: #111220;
+    --row-border: rgba(255,255,255,0.04);
+    --today-row-bg: rgba(201,168,76,0.08);
+    --today-row-border: rgba(201,168,76,0.35);
+    --star-color: rgba(255,255,255,0.35);
+    --transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  html.light {
+    --bg: #f5f0e8;
+    --surface: #ffffff;
+    --surface2: #ede8df;
+    --gold: #9a6f1e;
+    --gold-light: #7a5015;
+    --gold-dim: rgba(154,111,30,0.1);
+    --teal: #1a8a83;
+    --teal-dim: rgba(26,138,131,0.1);
+    --text: #1c1a14;
+    --text-dim: #7a7060;
+    --sehri: #2563b0;
+    --iftar: #b85c1a;
+    --sunrise: #9a6f1e;
+    --sunset: #c0392b;
+    --card-bg: linear-gradient(135deg, #ffffff 0%, #f8f3ea 100%);
+    --card-border: rgba(154,111,30,0.35);
+    --pill-bg: rgba(0,0,0,0.03);
+    --pill-border: rgba(0,0,0,0.07);
+    --sun-pill-bg: rgba(0,0,0,0.025);
+    --sun-pill-border: rgba(0,0,0,0.05);
+    --nav-bg: rgba(245,240,232,0.96);
+    --nav-border: rgba(0,0,0,0.1);
+    --row-bg: #ffffff;
+    --row-border: rgba(0,0,0,0.06);
+    --today-row-bg: rgba(154,111,30,0.07);
+    --today-row-border: rgba(154,111,30,0.35);
+    --star-color: rgba(154,111,30,0.2);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,26 +76,51 @@
     font-family: 'DM Mono', monospace;
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background 0.35s ease, color 0.35s ease;
   }
 
-  /* Background starfield */
+  /* Background starfield / pattern */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background-image:
-      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 50% 60%, rgba(255,255,255,0.25) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 10% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 90% 75%, rgba(255,255,255,0.2) 0%, transparent 100%),
-      radial-gradient(1px 1px at 35% 15%, rgba(255,255,255,0.35) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 65% 45%, rgba(255,255,255,0.2) 0%, transparent 100%),
-      radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 5% 50%, rgba(255,255,255,0.25) 0%, transparent 100%);
+      radial-gradient(1px 1px at 20% 30%, var(--star-color) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 10%, var(--star-color) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 60%, var(--star-color) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 10% 80%, var(--star-color) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 75%, var(--star-color) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 15%, var(--star-color) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 65% 45%, var(--star-color) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 85%, var(--star-color) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 50%, var(--star-color) 0%, transparent 100%);
     pointer-events: none;
     z-index: 0;
   }
+
+  /* Theme toggle button */
+  .theme-toggle {
+    position: fixed;
+    top: 16px; right: 16px;
+    z-index: 200;
+    background: var(--surface2);
+    border: 1px solid var(--pill-border);
+    border-radius: 99px;
+    padding: 7px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.35s, color 0.35s, border-color 0.2s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  }
+  .theme-toggle:active { transform: scale(0.96); }
+  .theme-toggle .t-icon { font-size: 15px; transition: transform 0.4s; }
+  .theme-toggle:hover .t-icon { transform: rotate(20deg); }
 
   .wrap { position: relative; z-index: 1; max-width: 420px; margin: 0 auto; padding: 0 16px 80px; }
 
@@ -101,14 +170,15 @@
 
   /* ─── TODAY CARD ─── */
   .today-card {
-    background: linear-gradient(135deg, #1a1b2e 0%, #0f1022 100%);
-    border: 1px solid rgba(201,168,76,0.3);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 20px;
     padding: 20px;
     margin: 16px 0;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 var(--card-border);
+    transition: background 0.35s, border-color 0.35s, box-shadow 0.35s;
   }
 
   .today-card::before {
@@ -159,11 +229,11 @@
   }
 
   .time-pill {
-    background: rgba(255,255,255,0.04);
+    background: var(--pill-bg);
     border-radius: 12px;
     padding: 12px;
-    border: 1px solid rgba(255,255,255,0.06);
-    transition: transform 0.2s;
+    border: 1px solid var(--pill-border);
+    transition: transform 0.2s, background 0.35s, border-color 0.35s;
   }
 
   .time-pill:active { transform: scale(0.97); }
@@ -197,13 +267,14 @@
   }
 
   .sun-pill {
-    background: rgba(255,255,255,0.03);
+    background: var(--sun-pill-bg);
     border-radius: 10px;
     padding: 10px 12px;
-    border: 1px solid rgba(255,255,255,0.04);
+    border: 1px solid var(--sun-pill-border);
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: background 0.35s, border-color 0.35s;
   }
 
   .sun-pill .icon { font-size: 18px; }
@@ -223,13 +294,14 @@
   /* ─── COUNTDOWN ─── */
   .countdown-bar {
     background: var(--surface2);
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid var(--pill-border);
     border-radius: var(--radius);
     padding: 16px 18px;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: background 0.35s, border-color 0.35s;
   }
 
   .countdown-bar .left {
@@ -258,10 +330,11 @@
   /* ─── FASTING PROGRESS ─── */
   .progress-wrap {
     background: var(--surface2);
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid var(--pill-border);
     border-radius: var(--radius);
     padding: 16px 18px;
     margin-bottom: 20px;
+    transition: background 0.35s, border-color 0.35s;
   }
 
   .progress-header {
@@ -276,7 +349,7 @@
 
   .progress-track {
     height: 6px;
-    background: rgba(255,255,255,0.06);
+    background: var(--pill-bg);
     border-radius: 99px;
     overflow: hidden;
   }
@@ -327,18 +400,18 @@
     padding: 11px 14px;
     border-radius: 12px;
     margin-bottom: 4px;
-    background: var(--surface);
-    border: 1px solid rgba(255,255,255,0.04);
+    background: var(--row-bg);
+    border: 1px solid var(--row-border);
     transition: background 0.15s, border-color 0.15s;
     cursor: pointer;
     font-size: 0.75rem;
   }
 
-  .day-row:active { background: rgba(255,255,255,0.06); }
+  .day-row:active { background: var(--pill-bg); }
 
   .day-row.today-row {
-    background: rgba(201,168,76,0.08);
-    border-color: rgba(201,168,76,0.35);
+    background: var(--today-row-bg);
+    border-color: var(--today-row-border);
   }
 
   .day-row .day-num {
@@ -397,12 +470,13 @@
     bottom: 0; left: 50%;
     transform: translateX(-50%);
     width: 100%; max-width: 420px;
-    background: rgba(17,18,32,0.95);
+    background: var(--nav-bg);
     backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid var(--nav-border);
     display: flex;
     padding: 10px 0 14px;
     z-index: 100;
+    transition: background 0.35s, border-color 0.35s;
   }
 
   .tab-btn {
@@ -432,10 +506,11 @@
   /* ─── INFO PAGE ─── */
   .info-card {
     background: var(--surface);
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid var(--row-border);
     border-radius: var(--radius);
     padding: 18px;
     margin-bottom: 12px;
+    transition: background 0.35s, border-color 0.35s;
   }
 
   .info-card h3 {
@@ -453,11 +528,12 @@
 
   .dua-box {
     background: var(--gold-dim);
-    border: 1px solid rgba(201,168,76,0.25);
+    border: 1px solid var(--card-border);
     border-radius: var(--radius);
     padding: 18px;
     margin-bottom: 12px;
     text-align: center;
+    transition: background 0.35s, border-color 0.35s;
   }
 
   .dua-arabic {
@@ -501,7 +577,7 @@
   }
 
   .ramadan-badge {
-    background: rgba(78,205,196,0.1);
+    background: var(--teal-dim);
     border: 1px solid rgba(78,205,196,0.2);
     border-radius: 8px;
     padding: 6px 12px;
@@ -510,6 +586,133 @@
     text-align: center;
     margin-bottom: 16px;
     letter-spacing: 0.08em;
+    transition: background 0.35s, color 0.35s;
+  }
+
+  /* ─── DOT GRID ─── */
+  .dot-grid-wrap {
+    background: var(--surface);
+    border: 1px solid var(--row-border);
+    border-radius: 20px;
+    padding: 20px 18px 18px;
+    margin-bottom: 16px;
+    transition: background 0.35s, border-color 0.35s;
+  }
+
+  .dot-grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 16px;
+  }
+
+  .dot-grid-header .dg-left .dg-title {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .dot-grid-header .dg-left .dg-count {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .dot-grid-header .dg-left .dg-sub {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .dot-grid-header .dg-right {
+    text-align: right;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .dot-grid-header .dg-right span {
+    display: block;
+  }
+
+  .dot-grid-header .dg-right .dg-elapsed {
+    color: var(--iftar);
+  }
+
+  #dot-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: flex-start;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pill-border);
+    transition: background 0.6s ease, transform 0.3s ease, opacity 0.4s;
+    flex-shrink: 0;
+  }
+
+  .dot.filled {
+    background: var(--iftar);
+    box-shadow: 0 0 4px rgba(244,162,97,0.35);
+  }
+
+  .dot.filled.sehri-dot {
+    background: var(--sehri);
+    box-shadow: 0 0 4px rgba(126,184,247,0.35);
+  }
+
+  .dot.current-dot {
+    background: white !important;
+    box-shadow: 0 0 8px rgba(255,255,255,0.7) !important;
+    animation: dot-pulse 1.5s ease-in-out infinite;
+    transform: scale(1.25);
+  }
+
+  @keyframes dot-pulse {
+    0%, 100% { opacity: 1; transform: scale(1.25); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+  }
+
+  .dot-legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 12px;
+  }
+
+  .dot-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .legend-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-dot.ld-elapsed { background: var(--iftar); }
+  .legend-dot.ld-remain { background: var(--pill-border); border: 1px solid rgba(255,255,255,0.15); }
+  .legend-dot.ld-now { background: white; }
+
+  /* ─── STATE MESSAGE ─── */
+  .fast-state-msg {
+    text-align: center;
+    padding: 10px 0 4px;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    font-style: italic;
   }
 
   /* scrollbar */
@@ -520,6 +723,9 @@
 </style>
 </head>
 <body>
+<button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
+  <span class="t-icon">☀️</span><span id="theme-label">Light</span>
+</button>
 <div class="wrap">
 
   <!-- HEADER -->
@@ -596,6 +802,28 @@
         <span id="fasting-rem">— remaining</span>
       </div>
     </div>
+
+    <!-- DOT GRID -->
+    <div class="dot-grid-wrap">
+      <div class="dot-grid-header">
+        <div class="dg-left">
+          <div class="dg-title">Minutes remaining</div>
+          <div class="dg-count" id="dg-count">—</div>
+          <div class="dg-sub" id="dg-sub">of — minute fast</div>
+        </div>
+        <div class="dg-right">
+          <span>● = 1 minute</span>
+          <span class="dg-elapsed" id="dg-elapsed-label">— elapsed</span>
+        </div>
+      </div>
+      <div id="dot-grid"></div>
+      <div class="dot-legend">
+        <div class="dot-legend-item"><div class="legend-dot ld-elapsed"></div>Elapsed</div>
+        <div class="dot-legend-item"><div class="legend-dot ld-now"></div>Now</div>
+        <div class="dot-legend-item"><div class="legend-dot ld-remain"></div>Remaining</div>
+      </div>
+    </div>
+    <div class="fast-state-msg" id="fast-state-msg"></div>
 
   </div><!-- /view-home -->
 
@@ -815,9 +1043,97 @@ function updateCountdown() {
   const remM = Math.floor((target - remH) * 60);
   document.getElementById('fasting-rem').textContent = target > 0
     ? `${remH}h ${remM}m remaining` : 'Fast complete';
+
+  // Update dot grid
+  updateDotGrid(e, h);
 }
 
-// ─── CALENDAR ─────────────────────────────────────────────────────────────────
+// ─── DOT GRID ─────────────────────────────────────────────────────────────────
+let lastDotMinute = -1;
+
+function updateDotGrid(e, h) {
+  const currentMinute = Math.floor(h * 60);
+
+  // Only rebuild grid if minute changed (expensive DOM op)
+  if (currentMinute === lastDotMinute) return;
+  lastDotMinute = currentMinute;
+
+  const grid = document.getElementById('dot-grid');
+  const isFasting = h >= e.sehri && h < e.iftar;
+  const fastComplete = h >= e.iftar;
+
+  // Total fast duration in minutes (for the dot count)
+  const totalMins = Math.round(e.fastHrs * 60);
+  const sehriMin = Math.floor(e.sehri * 60);
+  const nowMin = Math.floor(h * 60);
+  const iftarMin = Math.floor(e.iftar * 60);
+
+  let elapsedMins, remainMins, stateMsg;
+
+  if (isFasting) {
+    elapsedMins = nowMin - sehriMin;
+    remainMins = iftarMin - nowMin;
+    stateMsg = `Hang in there. ${remainMins} minutes until you can eat 🤲`;
+  } else if (fastComplete) {
+    elapsedMins = totalMins;
+    remainMins = 0;
+    stateMsg = 'Iftar time! Alhamdulillah 🌙 Fast complete.';
+  } else {
+    elapsedMins = 0;
+    remainMins = totalMins;
+    stateMsg = 'Fast hasn\'t started yet. Sehri time soon.';
+  }
+
+  // Update header text
+  document.getElementById('dg-count').textContent = remainMins > 0 ? remainMins : (fastComplete ? '0' : totalMins);
+  document.getElementById('dg-sub').textContent = `of ${totalMins} minute fast`;
+  document.getElementById('dg-elapsed-label').textContent = `${elapsedMins} elapsed`;
+  document.getElementById('fast-state-msg').textContent = stateMsg;
+
+  // Build dots — cap at 12 cols × N rows for clean layout
+  // Cap total dots shown to keep it readable: max ~240 dots
+  const COLS = 15;
+  const dotsToShow = Math.min(totalMins, 240);
+  const step = totalMins / dotsToShow; // which real minutes each dot represents
+
+  // Rebuild only if count changed
+  if (grid.children.length !== dotsToShow) {
+    grid.innerHTML = '';
+    for (let i = 0; i < dotsToShow; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      grid.appendChild(dot);
+    }
+  }
+
+  // Update dot states
+  const dots = grid.children;
+  for (let i = 0; i < dotsToShow; i++) {
+    const dotMinuteAbsolute = sehriMin + Math.round(i * step);
+    const dot = dots[i];
+
+    if (!isFasting && !fastComplete) {
+      // Before fasting - all empty
+      dot.className = 'dot';
+    } else if (fastComplete) {
+      // All filled
+      dot.className = 'dot filled';
+    } else {
+      // During fast
+      const isCurrentDot = (dotMinuteAbsolute === nowMin) ||
+        (i === dotsToShow - 1 && dotMinuteAbsolute < nowMin);
+      if (isCurrentDot) {
+        dot.className = 'dot current-dot';
+      } else if (dotMinuteAbsolute < nowMin) {
+        dot.className = 'dot filled';
+      } else {
+        dot.className = 'dot';
+      }
+    }
+  }
+}
+
+
 function buildCalendar() {
   const list = document.getElementById('calendar-list');
   const todayEntry = getTodayEntry();
@@ -864,6 +1180,30 @@ function switchTab(name, btn) {
   btn.classList.add('active');
   if (name === 'calendar') buildCalendar();
 }
+
+// ─── THEME TOGGLE ─────────────────────────────────────────────────────────────
+let isLight = false;
+
+function toggleTheme() {
+  isLight = !isLight;
+  document.documentElement.classList.toggle('light', isLight);
+  const btn = document.getElementById('theme-btn');
+  const icon = btn.querySelector('.t-icon');
+  const label = document.getElementById('theme-label');
+  if (isLight) {
+    icon.textContent = '🌙';
+    label.textContent = 'Dark';
+  } else {
+    icon.textContent = '☀️';
+    label.textContent = 'Light';
+  }
+  try { localStorage.setItem('ramadan-theme', isLight ? 'light' : 'dark'); } catch(e) {}
+}
+
+// Restore saved theme
+try {
+  if (localStorage.getItem('ramadan-theme') === 'light') toggleTheme();
+} catch(e) {}
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 populateToday();
