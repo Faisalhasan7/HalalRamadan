@@ -866,7 +866,7 @@
 
     <div class="info-card">
       <h3>ℹ️ About These Times</h3>
-      <p>Sehri times are based on Fajr (dawn) minus 10 minutes, Hanafi method. Iftar = Maghrib (sunset). Location: Dhaka 23.76°N, 90.39°E. Times are computed astronomically and match Islamic Foundation Bangladesh figures closely. Always verify with your local mosque before the first day.</p>
+      <p>Times are taken directly from the official Islamic Foundation Bangladesh timetable for Dhaka District, Ramadan 1447 AH (2026). Sehri is the warning time per Hanafi method. Iftar = Maghrib (sunset). Always confirm with your local mosque for the most precise local time.</p>
     </div>
   </div>
 
@@ -886,55 +886,7 @@
 </div>
 
 <script>
-// ─── ASTRONOMICAL CALCULATIONS ───────────────────────────────────────────────
-const LAT = 23.7639;
-const LON = 90.3889;
-
-function toRad(d) { return d * Math.PI / 180; }
-function toDeg(r) { return r * 180 / Math.PI; }
-
-function julianDay(date) {
-  const y = date.getUTCFullYear(), m = date.getUTCMonth() + 1, d = date.getUTCDate();
-  let Y = y, M = m;
-  if (m <= 2) { Y--; M += 12; }
-  const A = Math.floor(Y / 100);
-  const B = 2 - A + Math.floor(A / 4);
-  return Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + d + B - 1524.5;
-}
-
-function sunTimesForDate(date, lat, lon) {
-  const JD = julianDay(date);
-  const n = JD - 2451545.0;
-  const L = (280.46 + 0.9856474 * n) % 360;
-  const g = toRad((357.528 + 0.9856003 * n) % 360);
-  const lambda = toRad(L + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g));
-  const epsilon = toRad(23.439 - 0.0000004 * n);
-  const sinDec = Math.sin(epsilon) * Math.sin(lambda);
-  const dec = Math.asin(sinDec);
-  const cosDec = Math.cos(dec);
-  const RA = toDeg(Math.atan2(Math.cos(epsilon) * Math.sin(lambda), Math.cos(lambda))) / 15;
-  const EqT = L / 15 - ((RA % 24) + 24) % 24;
-  const latR = toRad(lat);
-  // Hour angle for sun at -0.833° (sunrise/sunset)
-  const cosH0 = (Math.sin(toRad(-0.833)) - Math.sin(latR) * sinDec) / (Math.cos(latR) * cosDec);
-  const H0 = cosH0 >= 1 ? 0 : cosH0 <= -1 ? 12 : toDeg(Math.acos(cosH0)) / 15;
-  // Noon in UTC
-  const noon = 12 - lon / 15 - EqT;
-  const sunriseUTC = noon - H0;
-  const sunsetUTC  = noon + H0;
-  // Fajr angle 18°
-  const cosHFajr = (Math.sin(toRad(-18)) - Math.sin(latR) * sinDec) / (Math.cos(latR) * cosDec);
-  const HFajr = cosHFajr >= 1 ? 0 : cosHFajr <= -1 ? 18 : toDeg(Math.acos(cosHFajr)) / 15;
-  const fajrUTC = noon - HFajr;
-  // Convert UTC hours to UTC+6
-  function utcToLocal(h) { return ((h + 6) % 24 + 24) % 24; }
-  return {
-    sunrise: utcToLocal(sunriseUTC),
-    sunset:  utcToLocal(sunsetUTC),
-    fajr:    utcToLocal(fajrUTC),
-  };
-}
-
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
 function fmt(h) {
   const total = Math.round(h * 60);
   let hh = Math.floor(total / 60) % 24;
@@ -953,27 +905,63 @@ function fmtHours(h) {
   return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
 }
 
-// ─── RAMADAN SCHEDULE ─────────────────────────────────────────────────────────
-// Ramadan 2026: Day 1 = Feb 19, Day 30 = Mar 20
+function hm(hStr, mStr) {
+  // Convert "HH:MM" string or hour + minute numbers to decimal hours
+  return parseInt(hStr) + parseInt(mStr) / 60;
+}
+
+// ─── OFFICIAL SCHEDULE (Islamic Foundation Bangladesh) ───────────────────────
+// Source: Islamic Foundation Bangladesh — Dhaka District, Ramadan 1447 / 2026
+// Columns: [sehri_h, sehri_m, iftar_h, iftar_m, sunrise_h, sunrise_m, sunset_h, sunset_m]
+// Sehri = warning time (already includes Hanafi precaution).
+// Iftar = Maghrib = sunset. Sunrise from official prayer timetable.
+const RAW = [
+  // Day  Sehri   Iftar   Sunrise  Sunset(=Iftar)
+  [ 1,  5,12,  17,58,  6,28,  17,58],
+  [ 2,  5,11,  17,58,  6,27,  17,58],
+  [ 3,  5,11,  17,59,  6,27,  17,59],
+  [ 4,  5,10,  17,59,  6,26,  17,59],
+  [ 5,  5, 9,  18, 0,  6,26,  18, 0],
+  [ 6,  5, 8,  18, 0,  6,25,  18, 0],
+  [ 7,  5, 8,  18, 1,  6,24,  18, 1],
+  [ 8,  5, 7,  18, 1,  6,24,  18, 1],
+  [ 9,  5, 6,  18, 2,  6,23,  18, 2],
+  [10,  5, 5,  18, 2,  6,22,  18, 2],
+  [11,  5, 5,  18, 3,  6,22,  18, 3],
+  [12,  5, 4,  18, 3,  6,21,  18, 3],
+  [13,  5, 3,  18, 4,  6,20,  18, 4],
+  [14,  5, 2,  18, 4,  6,19,  18, 4],
+  [15,  5, 1,  18, 5,  6,18,  18, 5],
+  [16,  5, 0,  18, 5,  6,17,  18, 5],
+  [17,  4,59,  18, 6,  6,16,  18, 6],
+  [18,  4,58,  18, 6,  6,15,  18, 6],
+  [19,  4,57,  18, 7,  6,14,  18, 7],
+  [20,  4,57,  18, 7,  6,13,  18, 7],
+  [21,  4,56,  18, 7,  6,12,  18, 7],
+  [22,  4,55,  18, 8,  6,11,  18, 8],
+  [23,  4,54,  18, 8,  6,10,  18, 8],
+  [24,  4,53,  18, 9,  6, 9,  18, 9],
+  [25,  4,52,  18, 9,  6, 8,  18, 9],
+  [26,  4,51,  18,10,  6, 7,  18,10],
+  [27,  4,50,  18,10,  6, 6,  18,10],
+  [28,  4,49,  18,10,  6, 5,  18,10],
+  [29,  4,48,  18,11,  6, 4,  18,11],
+  [30,  4,47,  18,11,  6, 3,  18,11],
+];
+
+// Ramadan Day 1 = Feb 19 2026
 const RAMADAN_START = new Date('2026-02-19');
 
-const SCHEDULE = [];
-for (let i = 0; i < 30; i++) {
+const SCHEDULE = RAW.map(r => {
+  const [day, sh, sm, ih, im, rish, rism, seth, setm] = r;
   const date = new Date(RAMADAN_START);
-  date.setDate(date.getDate() + i);
-  const t = sunTimesForDate(date, LAT, LON);
-  // Sehri = Fajr - 10 mins (Hanafi: 10 min before fajr)
-  const sehri = t.fajr - 10/60;
-  SCHEDULE.push({
-    day: i + 1,
-    date: date,
-    sehri: sehri,
-    iftar: t.sunset,
-    sunrise: t.sunrise,
-    sunset: t.sunset,
-    fastHrs: t.sunset - sehri,
-  });
-}
+  date.setDate(date.getDate() + day - 1);
+  const sehri   = sh + sm / 60;
+  const iftar   = ih + im / 60;
+  const sunrise = rish + rism / 60;
+  const sunset  = seth + setm / 60;
+  return { day, date, sehri, iftar, sunrise, sunset, fastHrs: iftar - sehri };
+});
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
