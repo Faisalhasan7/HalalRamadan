@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Ramadan 2026 — Dhaka</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b14;
+    --surface: #111220;
+    --surface2: #181928;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: rgba(201,168,76,0.15);
+    --teal: #4ecdc4;
+    --teal-dim: rgba(78,205,196,0.12);
+    --text: #e8e4d6;
+    --text-dim: #8a8575;
+    --sehri: #7eb8f7;
+    --iftar: #f4a261;
+    --sunrise: #ffd166;
+    --sunset: #ef6c57;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background starfield */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 60%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 10% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 75%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 15%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 65% 45%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 50%, rgba(255,255,255,0.25) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 420px; margin: 0 auto; padding: 0 16px 80px; }
+
+  /* ─── HEADER ─── */
+  .header {
+    text-align: center;
+    padding: 40px 0 24px;
+  }
+
+  .moon-icon {
+    font-size: 48px;
+    display: block;
+    animation: sway 4s ease-in-out infinite;
+    transform-origin: top center;
+  }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+  }
+
+  .header h1 {
+    font-family: 'Amiri', serif;
+    font-size: 2rem;
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+    margin-top: 12px;
+    line-height: 1.2;
+  }
+
+  .header .arabic {
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    direction: rtl;
+    margin-top: 4px;
+    opacity: 0.8;
+  }
+
+  .header .subtitle {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* ─── TODAY CARD ─── */
+  .today-card {
+    background: linear-gradient(135deg, #1a1b2e 0%, #0f1022 100%);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 16px 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.2);
+  }
+
+  .today-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .today-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .today-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(201,168,76,0.4), transparent);
+  }
+
+  .today-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .today-hijri {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+
+  .today-times {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .time-pill {
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.2s;
+  }
+
+  .time-pill:active { transform: scale(0.97); }
+
+  .time-pill .label {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .time-pill .val {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .pill-sehri .label { color: var(--sehri); }
+  .pill-sehri .val { color: var(--sehri); }
+  .pill-iftar .label { color: var(--iftar); }
+  .pill-iftar .val { color: var(--iftar); }
+
+  .today-sun {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .sun-pill {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sun-pill .icon { font-size: 18px; }
+  .sun-pill .info .lbl {
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .sun-pill .info .t {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .pill-sunrise .info .t { color: var(--sunrise); }
+  .pill-sunset .info .t { color: var(--sunset); }
+
+  /* ─── COUNTDOWN ─── */
+  .countdown-bar {
+    background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .countdown-bar .left {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .countdown-bar .left strong {
+    display: block;
+    font-size: 1rem;
+    letter-spacing: 0;
+    color: var(--text);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  .countdown-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.6rem;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+  }
+
+  /* ─── FASTING PROGRESS ─── */
+  .progress-wrap {
+    background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+  }
+
+  .progress-track {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sehri), var(--iftar));
+    border-radius: 99px;
+    transition: width 1s linear;
+  }
+
+  .progress-dot {
+    position: relative;
+    top: -9px;
+    width: 8px; height: 8px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255,255,255,0.6);
+    margin-left: auto;
+    margin-right: -4px;
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-head {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 24px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-head::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(201,168,76,0.3), transparent);
+  }
+
+  /* ─── CALENDAR LIST ─── */
+  .day-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 1fr 1fr 1fr;
+    align-items: center;
+    gap: 4px;
+    padding: 11px 14px;
+    border-radius: 12px;
+    margin-bottom: 4px;
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s, border-color 0.15s;
+    cursor: pointer;
+    font-size: 0.75rem;
+  }
+
+  .day-row:active { background: rgba(255,255,255,0.06); }
+
+  .day-row.today-row {
+    background: rgba(201,168,76,0.08);
+    border-color: rgba(201,168,76,0.35);
+  }
+
+  .day-row .day-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    line-height: 1;
+  }
+
+  .day-row.today-row .day-num { color: var(--gold-light); }
+
+  .day-row .day-label {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-top: 1px;
+  }
+
+  .day-row .col { text-align: center; }
+
+  .day-row .col .cv {
+    font-size: 0.76rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .day-row .col .ck {
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .c-sehri { color: var(--sehri); }
+  .c-iftar { color: var(--iftar); }
+  .c-sunrise { color: var(--sunrise); }
+  .c-sunset { color: var(--sunset); }
+
+  .col-header {
+    display: grid;
+    grid-template-columns: 52px 1fr 1fr 1fr 1fr;
+    gap: 4px;
+    padding: 4px 14px 8px;
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .col-header .ch1 { text-align: left; }
+
+  /* ─── TAB NAV ─── */
+  .tab-nav {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%; max-width: 420px;
+    background: rgba(17,18,32,0.95);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    padding: 10px 0 14px;
+    z-index: 100;
+  }
+
+  .tab-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+    text-transform: uppercase;
+  }
+
+  .tab-btn.active { color: var(--gold); }
+  .tab-btn .icon { font-size: 20px; }
+
+  /* ─── VIEWS ─── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ─── INFO PAGE ─── */
+  .info-card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+
+  .info-card h3 {
+    font-family: 'Amiri', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+
+  .info-card p {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .dua-box {
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .dua-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 1.3rem;
+    color: var(--gold-light);
+    direction: rtl;
+    line-height: 1.8;
+    margin-bottom: 10px;
+  }
+
+  .dua-trans {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .dua-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  /* pulse animation for live countdown */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  .ramadan-badge {
+    background: rgba(78,205,196,0.1);
+    border: 1px solid rgba(78,205,196,0.2);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.65rem;
+    color: var(--teal);
+    text-align: center;
+    margin-bottom: 16px;
+    letter-spacing: 0.08em;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 2px; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <span class="moon-icon">🌙</span>
+    <h1>Ramadan 2026</h1>
+    <div class="arabic">رمضان مبارك</div>
+    <div class="subtitle">Dhaka, Bangladesh · 1447 AH</div>
+  </div>
+
+  <!-- TAB VIEWS -->
+  <div id="view-home" class="view active">
+
+    <div class="ramadan-badge">
+      <span class="live-dot"></span>
+      Ramadan is ongoing · Day <span id="ramadan-day">—</span> of 30
+    </div>
+
+    <!-- TODAY CARD -->
+    <div class="today-card">
+      <div class="today-label">Today</div>
+      <div class="today-date" id="today-date">—</div>
+      <div class="today-hijri" id="today-hijri">— Ramadan 1447 AH</div>
+
+      <div class="today-times">
+        <div class="time-pill pill-sehri">
+          <div class="label">🌙 Sehri ends</div>
+          <div class="val" id="t-sehri">—</div>
+        </div>
+        <div class="time-pill pill-iftar">
+          <div class="label">🌅 Iftar</div>
+          <div class="val" id="t-iftar">—</div>
+        </div>
+      </div>
+
+      <div class="today-sun">
+        <div class="sun-pill pill-sunrise">
+          <div class="icon">☀️</div>
+          <div class="info">
+            <div class="lbl">Sunrise</div>
+            <div class="t" id="t-sunrise">—</div>
+          </div>
+        </div>
+        <div class="sun-pill pill-sunset">
+          <div class="icon">🌇</div>
+          <div class="info">
+            <div class="lbl">Sunset</div>
+            <div class="t" id="t-sunset">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-bar">
+      <div class="left">
+        <span id="countdown-label">Next —</span>
+        <strong id="countdown-event">—</strong>
+      </div>
+      <div class="countdown-num" id="countdown-time">—:—:—</div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span>Fasting progress</span>
+        <span id="fasting-pct">—%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:0.58rem; color:var(--text-dim);">
+        <span id="fasting-hours">— hrs fast today</span>
+        <span id="fasting-rem">— remaining</span>
+      </div>
+    </div>
+
+  </div><!-- /view-home -->
+
+  <div id="view-calendar" class="view">
+    <div class="section-head">Full Ramadan Schedule</div>
+    <div class="col-header">
+      <div class="ch1">Day</div>
+      <div>Sehri</div>
+      <div>Iftar</div>
+      <div>Rise</div>
+      <div>Set</div>
+    </div>
+    <div id="calendar-list"></div>
+  </div>
+
+  <div id="view-duas" class="view">
+    <div class="section-head">Ramadan Duas</div>
+
+    <div class="dua-box">
+      <div class="dua-label">Sehri (Suhoor) Niyyah</div>
+      <div class="dua-arabic">وَبِصَوْمِ غَدٍ نَّوَيْتُ مِنْ شَهْرِ رَمَضَانَ</div>
+      <div class="dua-trans">"I intend to keep the fast for tomorrow in the month of Ramadan."</div>
+    </div>
+
+    <div class="dua-box">
+      <div class="dua-label">Iftar Dua</div>
+      <div class="dua-arabic">اللَّهُمَّ اِنِّى لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَيْكَ تَوَكَّلْتُ وَعَلَى رِزْقِكَ اَفْطَرْتُ</div>
+      <div class="dua-trans">"O Allah! I fasted for You, I believe in You, I put my trust in You, and I break my fast with Your provision."</div>
+    </div>
+
+    <div class="info-card">
+      <h3>🌙 Laylatul Qadr</h3>
+      <p>The Night of Power falls in the last 10 nights of Ramadan — look especially for it on the odd nights: 21st, 23rd, 25th, 27th, and 29th. This year that's around March 12–18, 2026. Better than a thousand months.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>📿 Taraweeh</h3>
+      <p>Prayed after Isha each night. 8 or 20 rakats depending on your masjid. In Dhaka, Taraweeh usually starts around 9:00–9:30 PM throughout Ramadan.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>ℹ️ About These Times</h3>
+      <p>Sehri times are based on Fajr (dawn) minus 10 minutes, Hanafi method. Iftar = Maghrib (sunset). Location: Dhaka 23.76°N, 90.39°E. Times are computed astronomically and match Islamic Foundation Bangladesh figures closely. Always verify with your local mosque before the first day.</p>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- BOTTOM NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('home', this)">
+    <span class="icon">🏠</span>Today
+  </button>
+  <button class="tab-btn" onclick="switchTab('calendar', this)">
+    <span class="icon">📅</span>Calendar
+  </button>
+  <button class="tab-btn" onclick="switchTab('duas', this)">
+    <span class="icon">📿</span>Duas
+  </button>
+</div>
+
+<script>
+// ─── ASTRONOMICAL CALCULATIONS ───────────────────────────────────────────────
+const LAT = 23.7639;
+const LON = 90.3889;
+
+function toRad(d) { return d * Math.PI / 180; }
+function toDeg(r) { return r * 180 / Math.PI; }
+
+function julianDay(date) {
+  const y = date.getUTCFullYear(), m = date.getUTCMonth() + 1, d = date.getUTCDate();
+  let Y = y, M = m;
+  if (m <= 2) { Y--; M += 12; }
+  const A = Math.floor(Y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + d + B - 1524.5;
+}
+
+function sunTimesForDate(date, lat, lon) {
+  const JD = julianDay(date);
+  const n = JD - 2451545.0;
+  const L = (280.46 + 0.9856474 * n) % 360;
+  const g = toRad((357.528 + 0.9856003 * n) % 360);
+  const lambda = toRad(L + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g));
+  const epsilon = toRad(23.439 - 0.0000004 * n);
+  const sinDec = Math.sin(epsilon) * Math.sin(lambda);
+  const dec = Math.asin(sinDec);
+  const cosDec = Math.cos(dec);
+  const RA = toDeg(Math.atan2(Math.cos(epsilon) * Math.sin(lambda), Math.cos(lambda))) / 15;
+  const EqT = L / 15 - ((RA % 24) + 24) % 24;
+  const latR = toRad(lat);
+  // Hour angle for sun at -0.833° (sunrise/sunset)
+  const cosH0 = (Math.sin(toRad(-0.833)) - Math.sin(latR) * sinDec) / (Math.cos(latR) * cosDec);
+  const H0 = cosH0 >= 1 ? 0 : cosH0 <= -1 ? 12 : toDeg(Math.acos(cosH0)) / 15;
+  // Noon in UTC
+  const noon = 12 - lon / 15 - EqT;
+  const sunriseUTC = noon - H0;
+  const sunsetUTC  = noon + H0;
+  // Fajr angle 18°
+  const cosHFajr = (Math.sin(toRad(-18)) - Math.sin(latR) * sinDec) / (Math.cos(latR) * cosDec);
+  const HFajr = cosHFajr >= 1 ? 0 : cosHFajr <= -1 ? 18 : toDeg(Math.acos(cosHFajr)) / 15;
+  const fajrUTC = noon - HFajr;
+  // Convert UTC hours to UTC+6
+  function utcToLocal(h) { return ((h + 6) % 24 + 24) % 24; }
+  return {
+    sunrise: utcToLocal(sunriseUTC),
+    sunset:  utcToLocal(sunsetUTC),
+    fajr:    utcToLocal(fajrUTC),
+  };
+}
+
+function fmt(h) {
+  const total = Math.round(h * 60);
+  let hh = Math.floor(total / 60) % 24;
+  const mm = total % 60;
+  const ampm = hh >= 12 ? 'PM' : 'AM';
+  if (hh === 0) hh = 12;
+  else if (hh > 12) hh -= 12;
+  return `${hh}:${String(mm).padStart(2,'0')} ${ampm}`;
+}
+
+function fmtHours(h) {
+  const total = Math.round(h * 3600);
+  const hh = Math.floor(total / 3600);
+  const mm = Math.floor((total % 3600) / 60);
+  const ss = total % 60;
+  return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+}
+
+// ─── RAMADAN SCHEDULE ─────────────────────────────────────────────────────────
+// Ramadan 2026: Day 1 = Feb 19, Day 30 = Mar 20
+const RAMADAN_START = new Date('2026-02-19');
+
+const SCHEDULE = [];
+for (let i = 0; i < 30; i++) {
+  const date = new Date(RAMADAN_START);
+  date.setDate(date.getDate() + i);
+  const t = sunTimesForDate(date, LAT, LON);
+  // Sehri = Fajr - 10 mins (Hanafi: 10 min before fajr)
+  const sehri = t.fajr - 10/60;
+  SCHEDULE.push({
+    day: i + 1,
+    date: date,
+    sehri: sehri,
+    iftar: t.sunset,
+    sunrise: t.sunrise,
+    sunset: t.sunset,
+    fastHrs: t.sunset - sehri,
+  });
+}
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const HIJRI_DAYS = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th',
+  '11th','12th','13th','14th','15th','16th','17th','18th','19th','20th',
+  '21st','22nd','23rd','24th','25th','26th','27th','28th','29th','30th'];
+
+// ─── TODAY ────────────────────────────────────────────────────────────────────
+function getTodayEntry() {
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  return SCHEDULE.find(s => {
+    const d = s.date;
+    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    return ds === todayStr;
+  }) || SCHEDULE[1]; // fallback to day 2 for demo
+}
+
+function populateToday() {
+  const e = getTodayEntry();
+  const d = e.date;
+  document.getElementById('today-date').textContent =
+    `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} 2026`;
+  document.getElementById('today-hijri').textContent =
+    `${HIJRI_DAYS[e.day-1]} Ramadan 1447 AH`;
+  document.getElementById('ramadan-day').textContent = e.day;
+  document.getElementById('t-sehri').textContent = fmt(e.sehri);
+  document.getElementById('t-iftar').textContent = fmt(e.iftar);
+  document.getElementById('t-sunrise').textContent = fmt(e.sunrise);
+  document.getElementById('t-sunset').textContent = fmt(e.sunset);
+  document.getElementById('fasting-hours').textContent =
+    `${e.fastHrs.toFixed(1)} hrs fast today`;
+}
+
+function updateCountdown() {
+  const e = getTodayEntry();
+  const now = new Date();
+  const h = now.getHours() + now.getMinutes()/60 + now.getSeconds()/3600;
+
+  let label, target, pct;
+
+  if (h < e.sehri) {
+    // Before sehri
+    label = 'Time until Sehri ends';
+    target = e.sehri - h;
+    pct = 0;
+  } else if (h < e.iftar) {
+    // Fasting
+    label = 'Time until Iftar 🌅';
+    target = e.iftar - h;
+    const elapsed = h - e.sehri;
+    pct = Math.min(100, (elapsed / e.fastHrs) * 100);
+  } else {
+    // After iftar
+    label = 'Fasting complete today 🤲';
+    target = 0;
+    pct = 100;
+  }
+
+  const rem = target > 0 ? fmtHours(target) : '—';
+  document.getElementById('countdown-label').textContent = label;
+  document.getElementById('countdown-time').textContent = target > 0 ? rem : 'Done ✓';
+  document.getElementById('fasting-pct').textContent = Math.round(pct) + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  const remH = Math.floor(target);
+  const remM = Math.floor((target - remH) * 60);
+  document.getElementById('fasting-rem').textContent = target > 0
+    ? `${remH}h ${remM}m remaining` : 'Fast complete';
+}
+
+// ─── CALENDAR ─────────────────────────────────────────────────────────────────
+function buildCalendar() {
+  const list = document.getElementById('calendar-list');
+  const todayEntry = getTodayEntry();
+  list.innerHTML = '';
+  SCHEDULE.forEach(e => {
+    const d = e.date;
+    const isToday = e.day === todayEntry.day;
+    const row = document.createElement('div');
+    row.className = 'day-row' + (isToday ? ' today-row' : '');
+    row.innerHTML = `
+      <div>
+        <div class="day-num">${String(e.day).padStart(2,'0')}</div>
+        <div class="day-label">${d.getDate()} ${MONTHS[d.getMonth()]}</div>
+      </div>
+      <div class="col">
+        <div class="ck">Sehri</div>
+        <div class="cv c-sehri">${fmt(e.sehri)}</div>
+      </div>
+      <div class="col">
+        <div class="ck">Iftar</div>
+        <div class="cv c-iftar">${fmt(e.iftar)}</div>
+      </div>
+      <div class="col">
+        <div class="ck">Rise</div>
+        <div class="cv c-sunrise">${fmt(e.sunrise)}</div>
+      </div>
+      <div class="col">
+        <div class="ck">Set</div>
+        <div class="cv c-sunset">${fmt(e.sunset)}</div>
+      </div>
+    `;
+    list.appendChild(row);
+    if (isToday) {
+      setTimeout(() => row.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+    }
+  });
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'calendar') buildCalendar();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+populateToday();
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
